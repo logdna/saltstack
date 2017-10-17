@@ -7,7 +7,7 @@ The LogDNA Salt deployment integration listens for your salt state events and se
 1. Install the LogDNA salt engine on your salt master with:
 ```
 sudo mkdir -p /var/cache/salt/master/extmods/engines/
-sudo wget -O /var/cache/salt/master/extmods/engines/logdna.py https://s3.amazonaws.com/repo.logdna.com/integrations/salt/logdna.py
+sudo wget -O /var/cache/salt/master/extmods/engines/logdna.py https://raw.githubusercontent.com/logdna/saltstack/master/logdna.py
 ```
 2. Add the custom extension modules directory to your salt master configuration:
 ```
