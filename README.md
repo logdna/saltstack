@@ -28,3 +28,5 @@ sudo service salt-master restart
 ### Viewing salt states
 
 If you select the Salt app inside the All Apps [filter menu](doc:filters), you can see the states applied across all your hosts. Filtering by a specific source, will only show salt states applied to that particular host. As an aside, we do our best to format your salt states to look as pretty as possible.
+
+![Color-coded and everything](/logdna-salt-example.png?raw=true "Saltstack state run results in LogDNA")
