@@ -43,9 +43,11 @@ class event_batcher(object):
         if not timestamp:
             timestamp = int(time.time())
 
-        tag, payload = event
+        tag = event.pop('tag')
+        payload = event.pop('data')
 
-        if payload['fun'] == 'state.highstate' or payload['fun'] == 'state.apply' or payload['fun'] == 'state.sls':
+        func = payload.get('fun')
+        if func in ['state.highstate', 'state.apply', 'state.sls']:
             data = {'time': timestamp}
             data.update({'func': payload['fun']})
             data.update({'payload': payload})
@@ -55,6 +57,8 @@ class event_batcher(object):
         else:
             for event_str in self.extra_events:
                 if fnmatch(tag, event_str):
+                    log.debug('forwarding extra event %s to ingestor', tag)
+
                     data = {'time': timestamp}
                     data.update({'event': tag})
                     data.update({'payload': payload})
@@ -64,7 +68,7 @@ class event_batcher(object):
                 else:
                     continue
 
-        if self.timer == None:
+        if self.timer is None:
             self.timer = Timer(10, self.flush)
             self.timer.start()
 
@@ -73,7 +77,7 @@ class event_batcher(object):
 
 
 def start(ingestion_key=None, extra_events=[]):
-    if ingestion_key == None:
+    if ingestion_key is None:
         log.warning('Please specify your LogDNA Ingestion Key in your LogDNA engine config.')
 
     logdna_batcher = event_batcher(ingestion_key, extra_events=extra_events)
@@ -93,6 +97,6 @@ def start(ingestion_key=None, extra_events=[]):
         log.debug('LogDNA engine started')
 
     while True:
-        event = event_bus.get_event()
+        event = event_bus.get_event(full=True)
         if event:
             logdna_batcher.sendEvent(event)
